@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anythingbestprice.lk | Anything to the best price</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans">
+
+    <!-- Navbar -->
+    <nav class="bg-slate-900 text-white sticky top-0 z-40 shadow-lg">
+        <div class="max-w-7xl mx-auto px-3 py-3 flex justify-between items-center">
+            <div onclick="closeProductDetail()" class="flex items-center space-x-2 cursor-pointer">
+                <img src="logo/logo.jpg" alt="Anything to the best price" class="h-10 w-10 rounded-full object-cover border border-amber-400">
+                <div class="leading-tight">
+                    <span class="text-base sm:text-lg font-bold tracking-wide block">Anything<span class="text-amber-400">bestprice</span>.lk</span>
+                    <span class="text-[10px] text-amber-300 block">Anything to the best price</span>
+                </div>
+            </div>
+            <button onclick="toggleCart()" class="relative bg-amber-500 hover:bg-amber-600 text-slate-900 font-semibold px-3.5 py-2 rounded-lg transition flex items-center gap-2 text-sm">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Cart</span>
+                <span id="cart-count" class="bg-slate-900 text-white text-xs px-2 py-0.5 rounded-full">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Store View -->
+    <div id="store-view">
+        <!-- Hero Banner -->
+        <header class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white py-10 px-4 text-center">
+            <div class="max-w-3xl mx-auto">
+                <span class="bg-emerald-500/20 text-emerald-300 text-xs sm:text-sm font-semibold px-3.5 py-1 rounded-full border border-emerald-400/40">
+                    <i class="fas fa-truck mr-1"></i> Island-wide Free Delivery
+                </span>
+                <h1 class="text-2xl sm:text-4xl font-extrabold mt-3 mb-2">හොඳම භාණ්ඩ, අඩුම මිලට ගෙදරටම!</h1>
+                <p class="text-gray-300 text-sm sm:text-base mb-5">Anything to the best price — Lifestyle products & Smart Gadgets</p>
+                <div class="max-w-md mx-auto">
+                    <input type="text" id="search-input" onkeyup="filterProducts()" placeholder="භාණ්ඩ සොයන්න (Search products)..." class="w-full rounded-lg px-4 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                </div>
+            </div>
+        </header>
+
+        <!-- Products Grid (Daraz Style 2-Column Mobile Grid) -->
+        <main id="products" class="max-w-7xl mx-auto px-3 py-6">
+            <h2 class="text-lg sm:text-2xl font-bold mb-4 border-l-4 border-amber-500 pl-3">ජනප්‍රිය භාණ්ඩ (Featured Products)</h2>
+            
+            <div id="product-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-5">
+                <!-- Products loaded via JS -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Daraz-Style Product Detail View (Hidden by default) -->
+    <div id="product-detail-view" class="hidden max-w-5xl mx-auto px-3 py-5">
+        <button onclick="closeProductDetail()" class="mb-4 inline-flex items-center gap-2 text-sm font-semibold text-slate-700 hover:text-amber-600 bg-white px-3.5 py-2 rounded-lg shadow-sm border">
+            <i class="fas fa-arrow-left"></i> ආපසු භාණ්ඩ ලැයිස්තුවට (Back)
+        </button>
+
+        <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
+            <!-- Top Section: Left Image, Right Buy Box -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 sm:p-6">
+                <!-- Left: Square Product Image -->
+                <div class="bg-gray-50 rounded-lg border border-gray-100 flex items-center justify-center overflow-hidden">
+                    <img id="detail-img" src="" alt="" class="w-full aspect-square object-contain">
+                </div>
+
+                <!-- Right: Buy Details & Actions -->
+                <div class="flex flex-col justify-between">
+                    <div>
+                        <span id="detail-delivery" class="inline-block bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full mb-2">
+                            Free Delivery
+                        </span>
+                        <h1 id="detail-name" class="text-xl sm:text-2xl font-extrabold text-gray-900"></h1>
+                        
+                        <div class="mt-3 pb-3 border-b border-gray-100">
+                            <span class="text-xs text-gray-500 block">මිල (Price):</span>
+                            <span id="detail-price" class="text-2xl sm:text-3xl font-extrabold text-amber-600"></span>
+                        </div>
+
+                        <!-- Quantity Selector -->
+                        <div class="mt-4 flex items-center gap-4">
+                            <span class="text-sm font-semibold text-gray-700">ප්‍රමාණය (Qty):</span>
+                            <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+                                <button onclick="changeDetailQty(-1)" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 font-bold">-</button>
+                                <span id="detail-qty" class="px-4 py-1 font-semibold text-sm">1</span>
+                                <button onclick="changeDetailQty(1)" class="px-3 py-1 bg-gray-100 hover:bg-gray-200 font-bold">+</button>
+                            </div>
+                        </div>
+
+                        <!-- Delivery Info Box -->
+                        <div class="mt-4 bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs text-gray-600 space-y-1">
+                            <p><i class="fas fa-truck text-emerald-600 mr-1.5"></i> <strong>Island-wide Free Delivery</strong> (දිවයින පුරා නොමිලේ බෙදාහැරීම)</p>
+                            <p><i class="fas fa-hand-holding-usd text-amber-600 mr-1.5"></i> <strong>Cash on Delivery / Card Payment</strong> පහසුකම ඇත.</p>
+                        </div>
+                    </div>
+
+                    <!-- Buy Now & Add to Cart Buttons -->
+                    <div class="mt-6 grid grid-cols-2 gap-3">
+                        <button onclick="buyNowFromDetail()" class="bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold py-3 rounded-lg text-sm sm:text-base transition shadow">
+                            Buy Now
+                        </button>
+                        <button onclick="addFromDetailToCart()" class="bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-lg text-sm sm:text-base transition shadow">
+                            + Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Section: Full Description & Features -->
+            <div class="border-t border-gray-200 bg-gray-50 p-4 sm:p-6">
+                <h3 class="text-base sm:text-lg font-bold text-gray-900 mb-2 border-l-4 border-amber-500 pl-2.5">
+                    භාණ්ඩය පිළිබඳ විස්තර (Product Details)
+                </h3>
+                <p id="detail-desc" class="text-sm text-gray-700 leading-relaxed whitespace-pre-line"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shopping Cart Sidebar (Modal) -->
+    <div id="cart-modal" class="fixed inset-0 bg-black/60 hidden z-50 flex justify-end">
+        <div class="bg-white w-full max-w-md h-full flex flex-col justify-between p-5 shadow-2xl">
+            <div>
+                <div class="flex justify-between items-center border-b pb-3">
+                    <h3 class="text-lg font-bold">ඔබේ කරත්තය (Your Cart)</h3>
+                    <button onclick="toggleCart()" class="text-gray-500 hover:text-red-500 text-2xl">&times;</button>
+                </div>
+                <div id="cart-items" class="mt-4 space-y-2.5 max-h-72 overflow-y-auto">
+                    <p class="text-gray-500 text-center py-8 text-sm">කරත්තය හිස්ව පවතී.</p>
+                </div>
+            </div>
+
+            <div class="border-t pt-3">
+                <div class="flex justify-between text-xs text-emerald-700 font-semibold mb-1">
+                    <span>Delivery:</span>
+                    <span>Free Delivery</span>
+                </div>
+                <div class="flex justify-between text-base font-bold mb-3">
+                    <span>මුළු එකතුව (Total):</span>
+                    <span id="cart-total">රු. 0</span>
+                </div>
+                
+                <div class="space-y-2 mb-3">
+                    <input type="text" id="cust-name" placeholder="ඔබේ නම (Your Name)" class="w-full border rounded-lg px-3 py-2 text-sm">
+                    <input type="text" id="cust-phone" placeholder="දුරකථන අංකය (Phone Number)" class="w-full border rounded-lg px-3 py-2 text-sm">
+                    <input type="text" id="cust-address" placeholder="ලිපිනය (Delivery Address)" class="w-full border rounded-lg px-3 py-2 text-sm">
+                </div>
+
+                <button onclick="orderViaWhatsApp()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 rounded-lg flex items-center justify-center gap-2 mb-2 text-sm transition">
+                    <i class="fab fa-whatsapp text-lg"></i> WhatsApp මගින් ඇණවුම් කරන්න (COD)
+                </button>
+                <button onclick="payWithCard()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-lg flex items-center justify-center gap-2 text-sm transition">
+                    <i class="fas fa-credit-card"></i> Card මගින් ගෙවන්න
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-gray-400 py-6 text-center mt-10">
+        <p class="font-semibold text-white text-sm">Anythingbestprice.lk — Anything to the best price</p>
+        <p class="text-xs mt-1">WhatsApp: 074 033 8082 | Island-wide Free Delivery</p>
+    </footer>
+
+    <script>
+        const products = [
+            {
+                id: 1,
+                name: "YG300 Mini Projector",
+                price: 5650,
+                delivery: "Free Delivery",
+                desc: "• 480P Support & Bright Projection\n• Up to 60\" Large Display\n• Built-in Speaker\n• Multiple Inputs: HDMI, USB, AV\n• Portable & Lightweight design — නිවසේ සිටම චිත්‍රපට සහ වීඩියෝ නැරඹීමට ඉතා සුදුසුයි.",
+                image: "products/IMG-20261119-WA0013.jpg"
+            },
+            {
+                id: 2,
+                name: "10 Pcs Makeup Brush With Pouch",
+                price: 1600,
+                delivery: "Free Delivery",
+                desc: "• 10-Piece Complete Brush Set (Powder, Blush, Contour, Foundation, Highlight, Eyeshadow, Blending, Detail, Eyebrow, Spoolie)\n• Soft & Skin-Friendly Bristles\n• Durable & High Quality\n• Includes Portable Travel Pouch.",
+                image: "products/IMG-20261119-WA0020.jpg"
+            },
+            {
+                id: 3,
+                name: "Crystal Hair Remover",
+                price: 1160,
+                delivery: "Free Delivery",
+                desc: "• Painless Hair Removal — වේදනාවකින් තොරව අනවශ්‍ය රෝම ඉවත් කරයි\n• Gentle & Skin-Safe (No Chemicals, No Irritation)\n• Reusable & Eco-Friendly\n• Smooth & Silky Skin\n• Compact & Travel-Friendly design.",
+                image: "products/IMG-20261119-WA0031.jpg"
+            }
+        ];
+
+        let cart = [];
+        let activeProduct = null;
+        let activeQty = 1;
+
+        function renderProducts(list = products) {
+            const productList = document.getElementById('product-list');
+            productList.innerHTML = '';
+            list.forEach(p => {
+                productList.innerHTML += `
+                    <div onclick="openProductDetail(${p.id})" class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition cursor-pointer flex flex-col justify-between border border-gray-200">
+                        <div>
+                            <img src="${p.image}" alt="${p.name}" class="w-full aspect-square object-contain bg-white">
+                            <div class="p-2.5 sm:p-3.5 border-t border-gray-100">
+                                <h3 class="font-semibold text-xs sm:text-sm text-gray-800 line-clamp-2 leading-snug">${p.name}</h3>
+                                <p class="text-amber-600 font-extrabold text-base sm:text-lg mt-1">රු. ${p.price.toLocaleString()}</p>
+                                <span class="inline-block bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] sm:text-xs font-semibold px-2 py-0.5 rounded mt-1">
+                                    ${p.delivery}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function openProductDetail(id) {
+            activeProduct = products.find(p => p.id === id);
+            activeQty = 1;
+            document.getElementById('detail-img').src = activeProduct.image;
+            document.getElementById('detail-name').innerText = activeProduct.name;
+            document.getElementById('detail-price').innerText = `රු. ${activeProduct.price.toLocaleString()}`;
+            document.getElementById('detail-delivery').innerText = activeProduct.delivery;
+            document.getElementById('detail-desc').innerText = activeProduct.desc;
+            document.getElementById('detail-qty').innerText = activeQty;
+
+            document.getElementById('store-view').classList.add('hidden');
+            document.getElementById('product-detail-view').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        function closeProductDetail() {
+            document.getElementById('product-detail-view').classList.add('hidden');
+            document.getElementById('store-view').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        function changeDetailQty(delta) {
+            activeQty = Math.max(1, activeQty + delta);
+            document.getElementById('detail-qty').innerText = activeQty;
+        }
+
+        function addFromDetailToCart() {
+            if (!activeProduct) return;
+            for (let i = 0; i < activeQty; i++) {
+                cart.push(activeProduct);
+            }
+            updateCartUI();
+            alert(`${activeProduct.name} (${activeQty}) කරත්තයට එකතු විය!`);
+        }
+
+        function buyNowFromDetail() {
+            if (!activeProduct) return;
+            for (let i = 0; i < activeQty; i++) {
+                cart.push(activeProduct);
+            }
+            updateCartUI();
+            toggleCart();
+        }
+
+        function filterProducts() {
+            const q = document.getElementById('search-input').value.toLowerCase();
+            const filtered = products.filter(p => p.name.toLowerCase().includes(q));
+            renderProducts(filtered);
+        }
+
+        function updateCartUI() {
+            document.getElementById('cart-count').innerText = cart.length;
+            const cartItems = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p class="text-gray-500 text-center py-8 text-sm">කරත්තය හිස්ව පවතී.</p>';
+                cartTotal.innerText = 'රු. 0';
+                return;
+            }
+
+            let total = 0;
+            cartItems.innerHTML = '';
+            cart.forEach((item, index) => {
+                total += item.price;
+                cartItems.innerHTML += `
+                    <div class="flex justify-between items-center bg-gray-100 p-2.5 rounded-lg">
+                        <div>
+                            <p class="font-semibold text-xs sm:text-sm">${item.name}</p>
+                            <p class="text-xs text-gray-600">රු. ${item.price.toLocaleString()} (${item.delivery})</p>
+                        </div>
+                        <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700 text-sm"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+            });
+            cartTotal.innerText = `රු. ${total.toLocaleString()}`;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function toggleCart() {
+            document.getElementById('cart-modal').classList.toggle('hidden');
+        }
+
+        function orderViaWhatsApp() {
+            if (cart.length === 0) return alert("කරුණාකර පළමුව භාණ්ඩ තෝරාගන්න!");
+            const name = document.getElementById('cust-name').value || "Not Provided";
+            const phone = document.getElementById('cust-phone').value || "Not Provided";
+            const address = document.getElementById('cust-address').value || "Not Provided";
+            
+            let message = `*New Order - Anythingbestprice.lk*%0A%0A`;
+            message += `*Name:* ${name}%0A*Phone:* ${phone}%0A*Address:* ${address}%0A*Delivery:* Free Delivery%0A%0A*Items:*%0A`;
+            let total = 0;
+            cart.forEach((item, i) => {
+                message += `${i+1}. ${item.name} - රු. ${item.price.toLocaleString()}%0A`;
+                total += item.price;
+            });
+            message += `%0A*Total Amount:* රු. ${total.toLocaleString()}`;
+
+            window.open(`https://wa.me/94740338082?text=${message}`, '_blank');
+        }
+
+        function payWithCard() {
+            if (cart.length === 0) return alert("කරුණාකර පළමුව භාණ්ඩ තෝරාගන්න!");
+            alert("මීළඟ පියවරේදී අපි මෙතැනට PayHere Payment Gateway කෝඩ් එක සම්බන්ධ කරමු!");
+        }
+
+        renderProducts();
+    </script>
+</body>
+</html>
